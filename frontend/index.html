@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho Consciente</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <div class="app">
+        <header>
+            <h1>Carrinho Consciente</h1>
+        </header>
+        <main>
+            <div class="lists-view active" id="listsView">
+                <!-- Cards de listas serão renderizados aqui -->
+            </div>
+            <button class="add-list-btn" id="newListBtn" title="Nova Lista">
+                <span class="material-icons">add</span>
+            </button>
+            <div class="list-detail-view" id="listDetailView" style="display:none;">
+                <button id="backToLists" title="Voltar">
+                    <span class="material-icons">arrow_back</span>
+                </button>
+                <input type="text" id="listTitle" class="list-title-input" placeholder="Nome da Lista" autocomplete="off">
+                <div id="itemsList" class="items-container"></div>
+                <div class="add-item-row">
+                    <input type="text" id="newItemName" class="item-input" placeholder="Novo item" autocomplete="off">
+                    <input type="number" id="newItemQuantity" class="quantity-input" placeholder="Qtd" min="1" value="1">
+                    <input type="number" id="newItemPrice" class="price-input" placeholder="Preço" step="0.01" min="0">
+                    <button class="add-item-btn" id="addItemBtn" title="Adicionar item">
+                        <span class="material-icons">add</span>
+                    </button>
+                </div>
+                <div class="total-container">
+                    <span id="totalAmount">R$ 0,00</span>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="js/storage.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
