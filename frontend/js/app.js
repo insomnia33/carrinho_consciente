@@ -141,7 +141,7 @@ class CarrinhoConsciente {
     // Renderiza todos os itens da lista aberta
     renderItems() {
         this.itemsListContainer.innerHTML = '';
-        this.currentList.items.forEach(item => {
+        this.currentList.items.forEach((item, idx) => {
             const itemRow = document.createElement('div');
             itemRow.className = 'list-item';
             itemRow.innerHTML = `
@@ -151,6 +151,10 @@ class CarrinhoConsciente {
                 <input type="number" class="price-input" value="${item.price}" min="0" step="0.01" placeholder="Preço">
                 <button class="btn-icon scan-price-item" title="Escanear preço"><span class="material-icons">photo_camera</span></button>
             `;
+            // Evento do botão de OCR
+            itemRow.querySelector('.scan-price-item').addEventListener('click', () => {
+                this.handleScanPriceItem(item.id, idx);
+            });
             // Eventos de edição inline e auto-save
             const [checkbox, nameInput, qtyInput, priceInput, scanBtn] = itemRow.children;
             checkbox.addEventListener('change', () => {
@@ -177,10 +181,15 @@ class CarrinhoConsciente {
         this.updateTotal();
     }
 
-    // Placeholder para futura função OCR
-    handleScanPriceItem(itemId) {
-        alert(`Escanear preço para o item ${itemId} (funcionalidade OCR)`);
-        // Implementação OCR será feita futuramente
+    // OCR: Abre modal, processa imagem e insere valor no campo de preço
+    async handleScanPriceItem(itemId, itemIdx) {
+        const { openOcrModal, ensureTesseractLoaded } = await import('./ocr.js');
+        openOcrModal((value) => {
+            // Atualiza o valor do item e re-renderiza
+            this.currentList.items[itemIdx].price = parseFloat(value.replace(',', '.')) || 0;
+            this.renderItems();
+            this.autoSaveList();
+        });
     }
 
     // Adiciona novo item à lista atual
