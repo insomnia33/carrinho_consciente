@@ -141,7 +141,7 @@ class CarrinhoConsciente {
     // Renderiza todos os itens da lista aberta
     renderItems() {
         this.itemsListContainer.innerHTML = '';
-        this.currentList.items.forEach((item, idx) => {
+        this.currentList.items.forEach((item) => {
             const itemRow = document.createElement('div');
             itemRow.className = 'list-item';
             itemRow.innerHTML = `
@@ -153,27 +153,6 @@ class CarrinhoConsciente {
             `;
             // Evento do botão de OCR
             itemRow.querySelector('.scan-price-item').addEventListener('click', () => {
-                this.handleScanPriceItem(item.id, idx);
-            });
-            // Eventos de edição inline e auto-save
-            const [checkbox, nameInput, qtyInput, priceInput, scanBtn] = itemRow.children;
-            checkbox.addEventListener('change', () => {
-                item.checked = checkbox.checked;
-                this.autoSaveList();
-            });
-            nameInput.addEventListener('input', () => {
-                item.name = nameInput.value;
-                this.autoSaveList();
-            });
-            qtyInput.addEventListener('input', () => {
-                item.quantity = parseFloat(qtyInput.value) || 1;
-                this.autoSaveList();
-            });
-            priceInput.addEventListener('input', () => {
-                item.price = parseFloat(priceInput.value) || 0;
-                this.autoSaveList();
-            });
-            scanBtn.addEventListener('click', () => {
                 this.handleScanPriceItem(item.id);
             });
             this.itemsListContainer.appendChild(itemRow);
@@ -182,13 +161,16 @@ class CarrinhoConsciente {
     }
 
     // OCR: Abre modal, processa imagem e insere valor no campo de preço
-    async handleScanPriceItem(itemId, itemIdx) {
+    async handleScanPriceItem(itemId) {
         const { openOcrModal, ensureTesseractLoaded } = await import('./ocr.js');
         openOcrModal((value) => {
-            // Atualiza o valor do item e re-renderiza
-            this.currentList.items[itemIdx].price = parseFloat(value.replace(',', '.')) || 0;
-            this.renderItems();
-            this.autoSaveList();
+            // Busca o item pelo id para garantir que existe
+            const item = this.currentList.items.find(i => i.id === itemId);
+            if (item) {
+                item.price = parseFloat(value.replace(',', '.')) || 0;
+                this.renderItems();
+                this.autoSaveList();
+            }
         });
     }
 

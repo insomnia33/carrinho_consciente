@@ -16,6 +16,7 @@ export async function ensureTesseractLoaded() {
 // Abre o modal de OCR e retorna uma Promise com o valor selecionado
 export function openOcrModal(onValueSelected) {
     let modal = document.getElementById('ocrModal');
+    let input;
     if (!modal) {
         modal = document.createElement('div');
         modal.id = 'ocrModal';
@@ -48,9 +49,9 @@ export function openOcrModal(onValueSelected) {
     document.getElementById('ocrResults').innerHTML = '';
     document.getElementById('ocrImagePreview').innerHTML = '';
     document.getElementById('ocrLoading').style.display = 'none';
-    // Ao selecionar imagem
-    const input = document.getElementById('ocrImageInput');
-    input.value = '';
+    input = document.getElementById('ocrImageInput');
+    // Remove event listener anterior
+    input.onchange = null;
     // Dispara o seletor de imagem automaticamente ao abrir o modal
     setTimeout(() => { input.click(); }, 100);
     input.onchange = async (e) => {
@@ -69,7 +70,6 @@ export function openOcrModal(onValueSelected) {
             document.getElementById('ocrLoading').style.display = 'none';
             const img = document.getElementById('ocrImg');
             const container = img.parentElement;
-            // Usa as dimensões reais da imagem renderizada
             const imgWidth = img.naturalWidth || img.width;
             const imgHeight = img.naturalHeight || img.height;
             // Desenha bounding boxes para números
@@ -77,7 +77,6 @@ export function openOcrModal(onValueSelected) {
             numbers.forEach(word => {
                 const bbox = document.createElement('div');
                 bbox.className = 'ocr-bbox';
-                // Usa proporção da imagem original para a exibida
                 bbox.style.left = (word.bbox.x0 * img.width / imgWidth) + 'px';
                 bbox.style.top = (word.bbox.y0 * img.height / imgHeight) + 'px';
                 bbox.style.width = ((word.bbox.x1 - word.bbox.x0) * img.width / imgWidth) + 'px';
